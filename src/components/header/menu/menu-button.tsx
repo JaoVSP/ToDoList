@@ -3,15 +3,37 @@ import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { StyleSheet } from "react-native";
-import { useMenuModal } from "./hook/use-menu-modal";
+import { useModal } from "../../hooks/useModal";
+import { Animated } from "react-native";
 
 export function MenuButton({ isMenuHidden }: { isMenuHidden: boolean }) {
-  const { openMenu, closeMenu, modalVisibility } = useMenuModal();
+  const { modalType, animation, setModalType } = useModal();
+
+  const openMenu = () => {
+    setModalType("menu");
+    Animated.spring(animation, {
+      toValue: 80,
+      damping: 18,
+      stiffness: 90,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeMenu = () => {
+    Animated.spring(animation, {
+      toValue: -90,
+      damping: 18,
+      stiffness: 90,
+      overshootClamping: true,
+      useNativeDriver: true,
+    }).start(() => {
+      setModalType(null);
+    });
+  };
 
   const menuDisplay = isMenuHidden ? "none" : "flex";
-  const menuButtonFunction = modalVisibility != true ? openMenu : closeMenu;
-  const isMenuOpen =
-    modalVisibility === true ? styles.menuOpen : styles.menuClose;
+  const menuButtonFunction = modalType ? closeMenu : openMenu;
+  const isMenuOpen = modalType == "menu" ? styles.menuOpen : styles.menuClose;
   return (
     <Button
       style={[{ display: menuDisplay }, styles.button, isMenuOpen]}

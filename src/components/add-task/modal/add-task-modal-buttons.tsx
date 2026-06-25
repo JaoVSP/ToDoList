@@ -1,7 +1,7 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Animated, Keyboard } from "react-native";
 import { Button } from "../../ui/button";
 import { Colors } from "@/constants/theme";
-import { useTaskModal } from "../hook/use-task-modal";
+import { useModal } from "../../hooks/useModal";
 import { useLocalSearchParams } from "expo-router";
 import { useAddNewTaskMutation } from "@/store/api/apiSlice";
 import { useAppSelector } from "@/store/hooks";
@@ -21,11 +21,21 @@ export function AddTaskModalButtons({
   const [addNewTask, { isLoading }] = useAddNewTaskMutation();
   const user = useAppSelector((state) => state.userSession);
 
-  const { closeModal } = useTaskModal();
+  const { animation, setModalType } = useModal();
 
   const closeModalAndClearText = () => {
     setText("");
-    closeModal();
+
+    Keyboard.dismiss();
+    Animated.timing(animation, {
+      toValue: 0,
+      duration: 100,
+      delay: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setModalType(null);
+    });
+
     setError("");
   };
 

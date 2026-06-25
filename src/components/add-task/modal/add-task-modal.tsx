@@ -7,17 +7,20 @@ import { Modal } from "../../ui/modal";
 
 import { AddTaskModalButtons } from "./add-task-modal-buttons";
 import { AddTaskModalInput } from "./add-task-modal-input";
-import { useTaskModal } from "../hook/use-task-modal";
+import { useModal } from "../../hooks/useModal";
 
 export function AddTaskModal() {
   const [text, setText] = useState("");
-  const { modalVisibility, fadeAnimation } = useTaskModal();
+  const { modalType, animation } = useModal();
   const [error, setError] = useState("");
 
   const { width, height } = useWindowDimensions();
+
+  const isOpen = modalType == "addTask";
+
   return (
     <Modal
-      visible={modalVisibility}
+      visible={isOpen}
       childViewStyle={[
         { width: width * 0.85, height: height * 0.35 },
         styles.childView,
@@ -26,7 +29,7 @@ export function AddTaskModal() {
         styles.parentView,
         { height: 2 * height, width: 2 * width },
       ]}
-      animation={{ opacity: fadeAnimation }}
+      animation={{ opacity: animation }}
     >
       <Text style={styles.text}>Enter the task:</Text>
       <AddTaskModalInput setText={setText} text={text} />

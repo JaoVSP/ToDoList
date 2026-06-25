@@ -3,16 +3,20 @@ import { Modal } from "@/components/ui/modal";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
 import { Colors } from "@/constants/theme";
-import { useMenuModal } from "../hook/use-menu-modal";
+
 import { Profile } from "./profile";
 import { SignOut } from "./sign-out-button";
+import { useModal } from "@/components/hooks/useModal";
 
 export function Menu() {
-  const { modalVisibility, translateY } = useMenuModal();
+  const { animation, modalType } = useModal();
   const { width, height } = useWindowDimensions();
+
+  const isOpen = modalType == "menu";
+
   return (
     <Modal
-      visible={modalVisibility}
+      visible={isOpen}
       childViewStyle={[
         { width: width * 0.9, height: height * 0.2 },
         styles.childView,
@@ -21,7 +25,7 @@ export function Menu() {
         styles.parentView,
         { height: 2 * height, width: 2 * width },
       ]}
-      animation={{ transform: [{ translateY: translateY }] }}
+      animation={{ transform: [{ translateY: animation }] }}
     >
       <Profile />
       <SignOut />
